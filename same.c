@@ -71,32 +71,24 @@ void buscaLargura(uint32_t matrix[][16], ixj entrada){
 			noVizinho.i = no.i + 1;
 			noVizinho.j = no.j;
 			insereFila(&q, noVizinho);
-		} else {
-			failCount++;
 		}
 		if(no.i-1 >= 0 && corEntrada == matrix[no.i-1][no.j]){
 			matrix[no.i-1][no.j] = 0;
 			noVizinho.i = no.i - 1;
 			noVizinho.j = no.j;
 			insereFila(&q, noVizinho);
-		} else {
-			failCount++;
 		}
 		if(no.j+1 < 16 && corEntrada == matrix[no.i][no.j+1]){
 			matrix[no.i][no.j+1] = 0;
 			noVizinho.i = no.i;
 			noVizinho.j = no.j + 1;
 			insereFila(&q, noVizinho);
-		} else {
-			failCount++;
 		}
 		if(no.j-1 >= 0 && corEntrada == matrix[no.i][no.j-1]){
 			matrix[no.i][no.j-1] = 0;
 			noVizinho.i = no.i;
 			noVizinho.j = no.j - 1;
 			insereFila(&q, noVizinho);
-		} else {
-			failCount++;
 		}
 		if(!filaVazia(&q)){
 			matrix[no.i][no.j] = 0;
