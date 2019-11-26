@@ -6,14 +6,14 @@ typedef struct ixj{
 	int j;
 } ixj;
 
-struct caixinha{
+typedef struct caixinha{
     ixj info;
     struct caixinha *prox;
-};
+} caixinha;
 
 typedef struct Fila{
-    struct caixinha *inicio;
-    struct caixinha *fim;
+    caixinha *inicio;
+    caixinha *fim;
 } Fila;
 
 
@@ -27,8 +27,8 @@ int filaVazia(Fila *q){
 }
 
 void insereFila(Fila *q, ixj x){
-    struct caixinha *r;
-    r = malloc(sizeof(struct caixinha));
+    caixinha *r;
+    r = malloc(sizeof(caixinha));
     r->info = x;
     r->prox = NULL;
     if(filaVazia(q)){
@@ -41,7 +41,7 @@ void insereFila(Fila *q, ixj x){
 
 void removeFila(Fila *q, ixj *x){
     if(!filaVazia(q)){
-        struct caixinha *r = q->inicio;
+        caixinha *r = q->inicio;
         *x = r->info;
         q->inicio = q->inicio->prox;
         free(r);
