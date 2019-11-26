@@ -64,7 +64,6 @@ void buscaLargura(uint32_t matrix[][16], ixj entrada){
 	while(!filaVazia(&q)){
 		ixj no;
 		ixj noVizinho;
-		int failCount = 0;
 		removeFila(&q, &no);
 		if(no.i+1 < 12 && corEntrada == matrix[no.i+1][no.j]){
 			matrix[no.i+1][no.j] = 0;
