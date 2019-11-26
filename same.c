@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sodium.h>
-#include "./filaCircular.c"
+#include "./filaPonteiro.c"
 
 void imprime(uint32_t matrix[][16]){
 	printf("\033[0mX  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15\n");
@@ -65,7 +65,7 @@ void buscaLargura(uint32_t matrix[][16], ixj entrada){
 		ixj no;
 		ixj noVizinho;
 		int failCount = 0;
-		removefila(&q, &no);
+		removeFila(&q, &no);
 		if(no.i+1 < 12 && corEntrada == matrix[no.i+1][no.j]){
 			matrix[no.i+1][no.j] = 0;
 			noVizinho.i = no.i + 1;
