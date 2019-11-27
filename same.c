@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <sodium.h>
 #include "./filaPonteiro.c"
-#include "./pilhaPonteiro.c"
 
 void imprime(uint32_t matrix[][16]){
 	printf("\033[0mX  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15\n");
@@ -96,9 +95,8 @@ void buscaLargura(uint32_t matrix[][16], ixj entrada){
 	}
 }
 
-void deslocaBaixo(u_int32_t matrix[][16], Pilha *colVazia){
+void deslocaBaixo(u_int32_t matrix[][16]){
 	//descola pra baixo
-	inicializaPilha(colVazia);
 	for(int col = 15; col >= 0; col--){
 		Fila q;
 		inicializaFila(&q);
@@ -115,28 +113,29 @@ void deslocaBaixo(u_int32_t matrix[][16], Pilha *colVazia){
 			removeFila(&q, &volta);
 			matrix[lin][col] = volta.i;
 		}
-		if(matrix[11][col] == 0){
-			empilha(colVazia, col);
-		}	
 	}
 }
+
+
 void deslocaLado(u_int32_t matrix[][16]){
-	for(int lin = 11; lin >= 0; lin--){
+	for(int col = 0; col < 16; col++){
 		Fila q;
 		inicializaFila(&q);
-		for(int col = 0; col < 16; col++){
-			if(matrix[lin][col] != 0){
-				ixj hold;
-				hold.i = matrix[lin][col];
-				insereFila(&q, hold);
-				matrix[lin][col] = 0;
+		if(matrix[11][col] == 0 && col+1 < 16){
+			for(int lin = 11; lin >= 0; lin--){
+				if(matrix[lin][col+1] != 0){
+					ixj hold;
+					hold.i = matrix[lin][col];
+					insereFila(&q, hold);
+					matrix[lin][col] = 0;
+				}
+				ixj volta;
+				removeFila(&q, &volta);
+				matrix[lin][col] = volta.i;
 			}
+
 		}
-		for(int col = 0; col < 16 && !filaVazia(&q); col++){
-			ixj volta;
-			removeFila(&q, &volta);
-			matrix[lin][col] = volta.i;
-		}	
+
 	}
 }
 
@@ -150,7 +149,6 @@ int main(){
     uint32_t matrix[12][16];
     ixj indice;
 
-	Pilha colunasVazias;
 
     geraMatriz(matrix);    
     imprime(matrix);
@@ -160,10 +158,8 @@ int main(){
 		scanf("%i,%i", &indice.i, &indice.j);
 
 		buscaLargura(matrix, indice);
-		deslocaBaixo(matrix, &colunasVazias);
-		if(!pilhaVazia(&colunasVazias)){
-			deslocaLado(matrix);
-		}
+		deslocaBaixo(matrix);
+
 		imprime(matrix);
 	}
     
