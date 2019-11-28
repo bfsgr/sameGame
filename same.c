@@ -60,37 +60,38 @@ void buscaLargura(uint32_t matrix[][16], ixj entrada){
 	insereFila(&q, entrada);
 	
 	uint32_t corEntrada = matrix[entrada.i][entrada.j];
-
-	while(!filaVazia(&q)){
-		ixj no;
-		ixj noVizinho;
-		removeFila(&q, &no);
-		if(no.i+1 < 12 && corEntrada == matrix[no.i+1][no.j]){
-			matrix[no.i+1][no.j] = 0;
-			noVizinho.i = no.i + 1;
-			noVizinho.j = no.j;
-			insereFila(&q, noVizinho);
-		}
-		if(no.i-1 >= 0 && corEntrada == matrix[no.i-1][no.j]){
-			matrix[no.i-1][no.j] = 0;
-			noVizinho.i = no.i - 1;
-			noVizinho.j = no.j;
-			insereFila(&q, noVizinho);
-		}
-		if(no.j+1 < 16 && corEntrada == matrix[no.i][no.j+1]){
-			matrix[no.i][no.j+1] = 0;
-			noVizinho.i = no.i;
-			noVizinho.j = no.j + 1;
-			insereFila(&q, noVizinho);
-		}
-		if(no.j-1 >= 0 && corEntrada == matrix[no.i][no.j-1]){
-			matrix[no.i][no.j-1] = 0;
-			noVizinho.i = no.i;
-			noVizinho.j = no.j - 1;
-			insereFila(&q, noVizinho);
-		}
-		if(!filaVazia(&q)){
-			matrix[no.i][no.j] = 0;
+	if(corEntrada != 0){
+		while(!filaVazia(&q)){
+			ixj no;
+			ixj noVizinho;
+			removeFila(&q, &no);
+			if(no.i+1 < 12 && corEntrada == matrix[no.i+1][no.j]){
+				matrix[no.i+1][no.j] = 0;
+				noVizinho.i = no.i + 1;
+				noVizinho.j = no.j;
+				insereFila(&q, noVizinho);
+			}
+			if(no.i-1 >= 0 && corEntrada == matrix[no.i-1][no.j]){
+				matrix[no.i-1][no.j] = 0;
+				noVizinho.i = no.i - 1;
+				noVizinho.j = no.j;
+				insereFila(&q, noVizinho);
+			}
+			if(no.j+1 < 16 && corEntrada == matrix[no.i][no.j+1]){
+				matrix[no.i][no.j+1] = 0;
+				noVizinho.i = no.i;
+				noVizinho.j = no.j + 1;
+				insereFila(&q, noVizinho);
+			}
+			if(no.j-1 >= 0 && corEntrada == matrix[no.i][no.j-1]){
+				matrix[no.i][no.j-1] = 0;
+				noVizinho.i = no.i;
+				noVizinho.j = no.j - 1;
+				insereFila(&q, noVizinho);
+			}
+			if(!filaVazia(&q)){
+				matrix[no.i][no.j] = 0;
+			}
 		}
 	}
 }
@@ -119,22 +120,15 @@ void deslocaBaixo(u_int32_t matrix[][16]){
 
 void deslocaLado(u_int32_t matrix[][16]){
 	for(int col = 0; col < 16; col++){
-		Fila q;
-		inicializaFila(&q);
-		if(matrix[11][col] == 0 && col+1 < 16){
-			for(int lin = 11; lin >= 0; lin--){
-				if(matrix[lin][col+1] != 0){
-					ixj hold;
-					hold.i = matrix[lin][col];
-					insereFila(&q, hold);
-					matrix[lin][col] = 0;
+		for(int i = col; i < 16; i++){
+			if(matrix[11][col] == 0 && col+1 < 16 && matrix[11][i] != 0){
+				for(int lin = 11; lin >= 0; lin--){
+					matrix[lin][col] = matrix[lin][i];
+					matrix[lin][i] = 0;
 				}
-				ixj volta;
-				removeFila(&q, &volta);
-				matrix[lin][col] = volta.i;
 			}
-
 		}
+		
 
 	}
 }
@@ -159,7 +153,7 @@ int main(){
 
 		buscaLargura(matrix, indice);
 		deslocaBaixo(matrix);
-
+		deslocaLado(matrix);
 		imprime(matrix);
 	}
     
