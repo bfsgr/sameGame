@@ -3,7 +3,7 @@
 #include <sodium.h>
 #include "./filaPonteiro.c"
 
-void imprime(uint32_t matrix[][16]){
+void imprime(uint32_t matrix[][16], int score){
 	printf("\033[0mX  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15\n");
     for(int i = 0; i < 12; i++){
         for(int j = 0; j < 16; j++){
@@ -21,7 +21,11 @@ void imprime(uint32_t matrix[][16]){
                 	printf("\033[0;34m\u29E0  ");
               } else if(matrix[i][j] == 3) {
                   	printf("\033[0;32m\u29E0  ");
-              } else {
+              } else if(matrix[i][j] == 4) {
+                  	printf("\033[0;33m\u29E0  ");
+              } else if(matrix[i][j] == 5) {
+                  	printf("\033[0;35m\u29E0  ");
+			  }	else {
               		printf("   ");
               }
          	} else {
@@ -34,6 +38,12 @@ void imprime(uint32_t matrix[][16]){
             	} else if(matrix[i][j] == 3) {
 					//verde
                  	printf("\033[0;32m\u29E0  ");
+            	} else if(matrix[i][j] == 4) {
+					//verde
+                 	printf("\033[0;33m\u29E0  ");
+            	} else if(matrix[i][j] == 5) {
+					//verde
+                 	printf("\033[0;35m\u29E0  ");
             	} else {
             		printf("   ");
           		}
@@ -41,24 +51,25 @@ void imprime(uint32_t matrix[][16]){
     	}
     	printf("\033[0m\n");
 	}
+	printf("\nPontuação atual: %i\n", score);
 }
-void geraMatriz(uint32_t matrix[][16]){
+void geraMatriz(uint32_t matrix[][16], int dificuldade){
 	for(int i = 0; i < 12; i++){
         for(int j = 0; j < 16; j++){
-            int a = randombytes_uniform(4);
+            int a = randombytes_uniform(dificuldade+3);
             while(a == 0){
-              a = randombytes_uniform(4);
+              a = randombytes_uniform(dificuldade+3);
             }
             matrix[i][j] = a;
         }
     }
 }
 
-int buscaLargura(uint32_t matrix[][16], ixj entrada, int pesquisa){
+int buscaLargura(uint32_t matrix[][16], ixj entrada, int pesquisa, int *score){
 	Fila q;
 	inicializaFila(&q);
 	insereFila(&q, entrada);
-	
+	int efetividade = 1;
 	uint32_t corEntrada = matrix[entrada.i][entrada.j];
 	if(corEntrada != 0){
 		while(!filaVazia(&q)){
@@ -107,7 +118,11 @@ int buscaLargura(uint32_t matrix[][16], ixj entrada, int pesquisa){
 			}
 			if(!filaVazia(&q) && pesquisa == 0){
 				matrix[no.i][no.j] = 0;
+				efetividade++;
 			}
+		}
+		if(score != NULL && efetividade > 1){
+			*score = *score + ((efetividade-2) * (efetividade-2));
 		}
 		return 0;
 	}
@@ -157,7 +172,7 @@ int checaValidade(uint32_t matrix[][16]){
 			ixj teste;
 			teste.i = i;
 			teste.j = j;
-			if(buscaLargura(matrix, teste, 1) == 1){
+			if(buscaLargura(matrix, teste, 1, NULL) == 1){
 				return 1;
 			}
 		}
@@ -165,54 +180,33 @@ int checaValidade(uint32_t matrix[][16]){
 	return 0;
 }
 
-void clean_stdin(void){
-  int c;
-  do {
-      c = getchar();
-  } while (c != '\n' && c != EOF);
-}
-
-int jogadenovo(){
-	char a;
-	clean_stdin();
-	scanf("%c", &a);
-	if(a == 'n'){
-		return 1;
-	} else {
-		iniciaJogo();
-	}
-}
-
-int iniciaJogo(){
+void iniciaJogo(int modo){
 	uint32_t matrix[12][16];
     ixj indice;
 	int jogadasValidas = 1, venceu = 1;
 
-    geraMatriz(matrix);    
-    imprime(matrix);
+    geraMatriz(matrix, modo);    
+	int pontuacao = 0;
+    imprime(matrix, pontuacao);
     
 	while(jogadasValidas == 1 && venceu != 0){
 		printf("\nEscolha um indice: ");
 		scanf("%i,%i", &indice.i, &indice.j);
 
-		buscaLargura(matrix, indice, 0);
+		buscaLargura(matrix, indice, 0, &pontuacao);
 		deslocaBaixo(matrix);
 		deslocaLado(matrix, &venceu);
 		if(venceu != 0){
 			jogadasValidas = checaValidade(matrix);
 		}
-		imprime(matrix);
+		imprime(matrix, pontuacao);
 	}
 	if(venceu == 0){
-		printf("\nVocê ganhou. Gostaria de jogar de novo? (S/n) ");
-		if(jogadenovo()){
-			return 1;
-		}
+		printf("\nVocê ganhou.\n");
+
 	} else {
-		printf("\nVocê perdeu. Gostaria de jogar de novo? (S/n) ");
-		if(jogadenovo()){
-			return 1;
-		}
+		printf("\nVocê perdeu.\n");
+
 	}
 }
 
@@ -221,7 +215,13 @@ int main(){
     if(sodium_init() == -1){
         return -1;
     }
+	int modo;
 
-	iniciaJogo(); 
+	do{
+		printf("(1) Fácil\n(2) Médio\n(3) Difícil\n\nSelecione uma dificuldade: ");
+		scanf("%i", &modo);
+	}while(!(modo > 0 && modo < 4));
+
+	iniciaJogo(modo); 
 
 }
