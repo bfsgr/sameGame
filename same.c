@@ -16,34 +16,34 @@ void imprime(int matrix[][16], int score){
             }
             if(j > 8 ){
               if(matrix[i][j] == 1){
-                	printf("\033[0;31m\u29E0  ");
+                	printf("\033[0;31m\u25A0  ");
               } else if(matrix[i][j] == 2){
-                	printf("\033[0;34m\u29E0  ");
+                	printf("\033[0;34m\u25A0  ");
               } else if(matrix[i][j] == 3) {
-                  	printf("\033[0;32m\u29E0  ");
+                  	printf("\033[0;32m\u25A0  ");
               } else if(matrix[i][j] == 4) {
-                  	printf("\033[0;33m\u29E0  ");
+                  	printf("\033[0;33m\u25A0  ");
               } else if(matrix[i][j] == 5) {
-                  	printf("\033[0;35m\u29E0  ");
+                  	printf("\033[0;35m\u25A0  ");
 			  }	else {
               		printf("   ");
               }
          	} else {
             	if(matrix[i][j] == 1){
 					//vermelho
-            	    printf("\033[0;31m\u29E0  ");
+            	    printf("\033[0;31m\u25A0  ");
             	} else if(matrix[i][j] == 2){
 					//azul
-                	printf("\033[0;34m\u29E0  ");
+                	printf("\033[0;34m\u25A0  ");
             	} else if(matrix[i][j] == 3) {
 					//verde
-                 	printf("\033[0;32m\u29E0  ");
+                 	printf("\033[0;32m\u25A0  ");
             	} else if(matrix[i][j] == 4) {
 					//verde
-                 	printf("\033[0;33m\u29E0  ");
+                 	printf("\033[0;33m\u25A0  ");
             	} else if(matrix[i][j] == 5) {
 					//verde
-                 	printf("\033[0;35m\u29E0  ");
+                 	printf("\033[0;35m\u25A0  ");
             	} else {
             		printf("   ");
           		}
