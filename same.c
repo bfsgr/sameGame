@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sodium.h>
+#include <time.h>
 #include "./filaPonteiro.c"
 
-void imprime(uint32_t matrix[][16], int score){
+void imprime(int matrix[][16], int score){
 	printf("\033[0mX  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15\n");
     for(int i = 0; i < 12; i++){
         for(int j = 0; j < 16; j++){
@@ -53,24 +53,24 @@ void imprime(uint32_t matrix[][16], int score){
 	}
 	printf("\nPontuação atual: %i\n", score);
 }
-void geraMatriz(uint32_t matrix[][16], int dificuldade){
+void geraMatriz(int matrix[][16], int dificuldade){
 	for(int i = 0; i < 12; i++){
         for(int j = 0; j < 16; j++){
-            int a = randombytes_uniform(dificuldade+3);
+            int a = rand() % (dificuldade+3);
             while(a == 0){
-              a = randombytes_uniform(dificuldade+3);
+              a = rand() % (dificuldade+3);
             }
             matrix[i][j] = a;
         }
     }
 }
 
-int buscaLargura(uint32_t matrix[][16], ixj entrada, int pesquisa, int *score){
+int buscaLargura(int matrix[][16], ixj entrada, int pesquisa, int *score){
 	Fila q;
 	inicializaFila(&q);
 	insereFila(&q, entrada);
 	int efetividade = 1;
-	uint32_t corEntrada = matrix[entrada.i][entrada.j];
+	int corEntrada = matrix[entrada.i][entrada.j];
 	if(corEntrada != 0){
 		while(!filaVazia(&q)){
 			ixj no;
@@ -129,7 +129,7 @@ int buscaLargura(uint32_t matrix[][16], ixj entrada, int pesquisa, int *score){
 	return 0;
 }
 
-void deslocaBaixo(uint32_t matrix[][16]){
+void deslocaBaixo(int matrix[][16]){
 	//descola pra baixo
 	for(int col = 15; col >= 0; col--){
 		Fila q;
@@ -151,7 +151,7 @@ void deslocaBaixo(uint32_t matrix[][16]){
 }
 
 
-void deslocaLado(uint32_t matrix[][16], int *venceu){
+void deslocaLado(int matrix[][16], int *venceu){
 	*venceu = 0;
 	for(int col = 0; col < 16; col++){
 		for(int i = col; i < 16; i++){
@@ -166,7 +166,7 @@ void deslocaLado(uint32_t matrix[][16], int *venceu){
 	}
 }
 
-int checaValidade(uint32_t matrix[][16]){
+int checaValidade(int matrix[][16]){
 	for(int i = 11; i >= 0; i--){
 		for(int j = 0; j < 16; j++){
 			ixj teste;
@@ -181,7 +181,7 @@ int checaValidade(uint32_t matrix[][16]){
 }
 
 void iniciaJogo(int modo){
-	uint32_t matrix[12][16];
+	int matrix[12][16];
     ixj indice;
 	int jogadasValidas = 1, venceu = 1;
 
@@ -190,7 +190,7 @@ void iniciaJogo(int modo){
     imprime(matrix, pontuacao);
     
 	while(jogadasValidas == 1 && venceu != 0){
-		printf("\nEscolha um indice: ");
+		printf("\nEscolha um indice (linha,coluna): ");
 		scanf("%i,%i", &indice.i, &indice.j);
 
 		buscaLargura(matrix, indice, 0, &pontuacao);
@@ -211,10 +211,9 @@ void iniciaJogo(int modo){
 }
 
 int main(){
-	//inicializa o libsodium
-    if(sodium_init() == -1){
-        return -1;
-    }
+
+	srand(time(NULL));
+	
 	int modo;
 
 	do{
